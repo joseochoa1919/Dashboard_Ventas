@@ -2,6 +2,10 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 
+# ============================================================
+# CONFIGURACIÓN
+# ============================================================
+
 st.set_page_config(
     page_title="Sales Intelligence | Dashboard",
     page_icon="📊",
@@ -9,8 +13,13 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+# ============================================================
+# DISEÑO CSS
+# ============================================================
+
 st.markdown("""
 <style>
+
 .stApp {
     background: #F5F7FB;
 }
@@ -28,6 +37,8 @@ section[data-testid="stSidebar"] * {
     max-width: 1500px;
     padding: 1.5rem 2rem 2rem 2rem;
 }
+
+/* HEADER */
 
 .dashboard-header {
     background: linear-gradient(135deg, #111827 0%, #2563EB 100%);
@@ -50,26 +61,49 @@ section[data-testid="stSidebar"] * {
     opacity: 0.90;
 }
 
+/* KPI */
+
 .kpi-card {
     background: white;
     border-radius: 16px;
     padding: 20px;
-    min-height: 120px;
+    min-height: 145px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.06);
     border: 1px solid #E5E7EB;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.kpi-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.10);
+}
+
+.kpi-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 12px;
+    background: #EFF6FF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 23px;
+    margin-bottom: 10px;
 }
 
 .kpi-title {
     color: #6B7280;
     font-size: 14px;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
+    font-weight: 500;
 }
 
 .kpi-value {
     color: #111827;
-    font-size: 28px;
+    font-size: 26px;
     font-weight: 700;
 }
+
+/* TÍTULOS */
 
 .section-title {
     color: #111827;
@@ -78,6 +112,8 @@ section[data-testid="stSidebar"] * {
     margin-top: 25px;
     margin-bottom: 10px;
 }
+
+/* SIDEBAR */
 
 .sidebar-title {
     font-size: 23px;
@@ -92,14 +128,22 @@ section[data-testid="stSidebar"] * {
     margin-bottom: 18px;
 }
 
+/* BOTÓN DESCARGA */
+
 div[data-testid="stDownloadButton"] button {
     width: 100%;
     min-height: 45px;
+    border-radius: 10px;
+    font-weight: 600;
 }
+
+/* TABLA */
 
 [data-testid="stDataFrame"] {
     width: 100%;
 }
+
+/* RESPONSIVE TABLET */
 
 @media (max-width: 992px) {
 
@@ -125,6 +169,8 @@ div[data-testid="stDownloadButton"] button {
     }
 }
 
+/* RESPONSIVE CELULAR */
+
 @media (max-width: 768px) {
 
     .block-container {
@@ -147,7 +193,14 @@ div[data-testid="stDownloadButton"] button {
 
     .kpi-card {
         padding: 15px;
-        min-height: 100px;
+        min-height: 125px;
+    }
+
+    .kpi-icon {
+        width: 38px;
+        height: 38px;
+        font-size: 19px;
+        border-radius: 10px;
     }
 
     .kpi-title {
@@ -155,7 +208,7 @@ div[data-testid="stDownloadButton"] button {
     }
 
     .kpi-value {
-        font-size: 20px;
+        font-size: 19px;
     }
 
     .section-title {
@@ -172,23 +225,40 @@ div[data-testid="stDownloadButton"] button {
     }
 }
 
+/* CELULARES PEQUEÑOS */
+
 @media (max-width: 480px) {
 
     .dashboard-header h1 {
         font-size: 20px;
     }
 
+    .dashboard-header p {
+        font-size: 11px;
+    }
+
     .kpi-card {
         padding: 12px;
+        min-height: 115px;
+    }
+
+    .kpi-icon {
+        width: 34px;
+        height: 34px;
+        font-size: 17px;
     }
 
     .kpi-value {
-        font-size: 18px;
+        font-size: 17px;
     }
 }
+
 </style>
 """, unsafe_allow_html=True)
 
+# ============================================================
+# CARGAR DATOS
+# ============================================================
 
 @st.cache_data
 def cargar_datos():
@@ -208,6 +278,9 @@ def cargar_datos():
 
 df = cargar_datos()
 
+# ============================================================
+# SIDEBAR - FILTROS
+# ============================================================
 
 with st.sidebar:
 
@@ -251,6 +324,9 @@ with st.sidebar:
 
     st.caption("Periodo: Enero - Septiembre 2026")
 
+# ============================================================
+# FILTRAR DATOS
+# ============================================================
 
 df_filtrado = df[
     df["Ciudad"].isin(ciudades)
@@ -259,14 +335,25 @@ df_filtrado = df[
     & df["Medio_Pago"].isin(medios)
 ].copy()
 
+# ============================================================
+# HEADER
+# ============================================================
 
 st.markdown("""
 <div class="dashboard-header">
+
     <h1>📊 Dashboard Ejecutivo de Ventas</h1>
-    <p>Sales Intelligence · Análisis comercial · Perú · 2026</p>
+
+    <p>
+        Sales Intelligence · Análisis comercial · Perú · 2026
+    </p>
+
 </div>
 """, unsafe_allow_html=True)
 
+# ============================================================
+# KPIs
+# ============================================================
 
 ventas_totales = df_filtrado["Venta_Total_Soles"].sum()
 
@@ -280,75 +367,108 @@ ticket_promedio = (
     else 0
 )
 
-
 kpi1, kpi2, kpi3, kpi4 = st.columns(4)
-
 
 with kpi1:
 
     st.markdown(
         f"""
         <div class="kpi-card">
-            <div class="kpi-title">Ventas Totales</div>
+
+            <div class="kpi-icon">
+                💰
+            </div>
+
+            <div class="kpi-title">
+                Ventas Totales
+            </div>
+
             <div class="kpi-value">
                 S/ {ventas_totales:,.2f}
             </div>
+
         </div>
         """,
         unsafe_allow_html=True
     )
-
 
 with kpi2:
 
     st.markdown(
         f"""
         <div class="kpi-card">
-            <div class="kpi-title">Transacciones</div>
+
+            <div class="kpi-icon">
+                🧾
+            </div>
+
+            <div class="kpi-title">
+                Transacciones
+            </div>
+
             <div class="kpi-value">
                 {transacciones:,}
             </div>
+
         </div>
         """,
         unsafe_allow_html=True
     )
-
 
 with kpi3:
 
     st.markdown(
         f"""
         <div class="kpi-card">
-            <div class="kpi-title">Unidades Vendidas</div>
+
+            <div class="kpi-icon">
+                📦
+            </div>
+
+            <div class="kpi-title">
+                Unidades Vendidas
+            </div>
+
             <div class="kpi-value">
                 {unidades:,}
             </div>
+
         </div>
         """,
         unsafe_allow_html=True
     )
-
 
 with kpi4:
 
     st.markdown(
         f"""
         <div class="kpi-card">
-            <div class="kpi-title">Ticket Promedio</div>
+
+            <div class="kpi-icon">
+                🎫
+            </div>
+
+            <div class="kpi-title">
+                Ticket Promedio
+            </div>
+
             <div class="kpi-value">
                 S/ {ticket_promedio:,.2f}
             </div>
+
         </div>
         """,
         unsafe_allow_html=True
     )
 
+# ============================================================
+# EVOLUCIÓN MENSUAL
+# ============================================================
 
 st.markdown(
     '<div class="section-title">📈 Evolución de Ventas Mensuales</div>',
     unsafe_allow_html=True
 )
-
 
 ventas_mes = (
     df_filtrado
@@ -359,7 +479,6 @@ ventas_mes = (
     .sum()
     .sort_values("Mes_Numero")
 )
-
 
 fig_mes = px.area(
     ventas_mes,
@@ -372,7 +491,6 @@ fig_mes = px.area(
     }
 )
 
-
 fig_mes.update_layout(
     template="plotly_white",
     margin=dict(
@@ -384,15 +502,16 @@ fig_mes.update_layout(
     height=400
 )
 
-
 st.plotly_chart(
     fig_mes,
     use_container_width=True
 )
 
+# ============================================================
+# CATEGORÍA Y CIUDAD
+# ============================================================
 
 col1, col2 = st.columns(2)
-
 
 with col1:
 
@@ -441,7 +560,6 @@ with col1:
         use_container_width=True
     )
 
-
 with col2:
 
     st.markdown(
@@ -489,9 +607,11 @@ with col2:
         use_container_width=True
     )
 
+# ============================================================
+# VENDEDORES Y MEDIOS DE PAGO
+# ============================================================
 
 col3, col4 = st.columns(2)
-
 
 with col3:
 
@@ -544,7 +664,6 @@ with col3:
         use_container_width=True
     )
 
-
 with col4:
 
     st.markdown(
@@ -584,12 +703,14 @@ with col4:
         use_container_width=True
     )
 
+# ============================================================
+# DETALLE DE VENTAS
+# ============================================================
 
 st.markdown(
     '<div class="section-title">📋 Detalle de Ventas</div>',
     unsafe_allow_html=True
 )
-
 
 columnas_detalle = [
     "ID_Venta",
@@ -605,11 +726,9 @@ columnas_detalle = [
     "Venta_Total_Soles"
 ]
 
-
 df_detalle = df_filtrado[
     columnas_detalle
 ].copy()
-
 
 st.dataframe(
     df_detalle,
@@ -617,11 +736,13 @@ st.dataframe(
     hide_index=True
 )
 
+# ============================================================
+# DESCARGA
+# ============================================================
 
 csv = df_detalle.to_csv(
     index=False
 ).encode("utf-8")
-
 
 st.download_button(
     label="⬇️ Descargar ventas filtradas",
@@ -630,6 +751,9 @@ st.download_button(
     mime="text/csv"
 )
 
+# ============================================================
+# FOOTER
+# ============================================================
 
 st.markdown("""
 <div style="
@@ -637,6 +761,7 @@ st.markdown("""
     color:#6B7280;
     font-size:12px;
     margin-top:30px;
+    padding-bottom:10px;
 ">
     Dashboard Ejecutivo de Ventas · Sales Intelligence · Perú 2026
 </div>
