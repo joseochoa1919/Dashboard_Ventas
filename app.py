@@ -7,137 +7,172 @@ import plotly.express as px
 # ============================================================
 
 st.set_page_config(
-    page_title="Sales Intelligence | Dashboard",
+    page_title="Sales Intelligence | Dashboard Ejecutivo",
     page_icon="📊",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
 # ============================================================
-# CSS
+# ESTILOS PROFESIONALES Y RESPONSIVE
 # ============================================================
 
 st.markdown("""
 <style>
 
 .stApp {
-    background: #F5F7FB;
+    background: #F4F7FB;
 }
 
+/* CONTENEDOR PRINCIPAL */
+.block-container {
+    max-width: 1500px;
+    padding: 1.4rem 2rem 2rem 2rem;
+}
+
+/* SIDEBAR */
 section[data-testid="stSidebar"] {
-    background: linear-gradient(180deg, #111827 0%, #1F2937 100%);
-    min-width: 280px;
+    background: linear-gradient(
+        180deg,
+        #0F172A 0%,
+        #1E293B 100%
+    );
+    min-width: 285px;
 }
 
 section[data-testid="stSidebar"] * {
-    color: #F9FAFB !important;
+    color: #F8FAFC !important;
 }
 
-.block-container {
-    max-width: 1500px;
-    padding: 1.5rem 2rem 2rem 2rem;
+.sidebar-title {
+    font-size: 23px;
+    font-weight: 800;
+    color: white !important;
+    margin-bottom: 3px;
+}
+
+.sidebar-subtitle {
+    font-size: 12px;
+    color: #CBD5E1 !important;
+    margin-bottom: 20px;
+}
+
+.filter-title {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #94A3B8 !important;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 /* HEADER */
-
 .dashboard-header {
-    background: linear-gradient(135deg, #111827 0%, #2563EB 100%);
+    background: linear-gradient(
+        135deg,
+        #0F172A 0%,
+        #1D4ED8 100%
+    );
     padding: 28px 32px;
     border-radius: 18px;
     color: white;
     margin-bottom: 22px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.10);
+    box-shadow: 0 8px 25px rgba(15, 23, 42, 0.14);
 }
 
 .dashboard-header h1 {
     margin: 0;
-    font-size: 32px;
-    font-weight: 700;
+    font-size: 31px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
 }
 
 .dashboard-header p {
-    margin: 7px 0 0 0;
-    font-size: 15px;
+    margin: 8px 0 0 0;
+    font-size: 14px;
     opacity: 0.90;
 }
 
 /* KPI */
-
 .kpi-box {
     background: white;
     border-radius: 16px;
     padding: 18px 20px;
-    min-height: 135px;
-    border: 1px solid #E5E7EB;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    min-height: 145px;
+    border: 1px solid #E2E8F0;
+    box-shadow: 0 4px 15px rgba(15, 23, 42, 0.06);
     transition: all 0.2s ease;
 }
 
 .kpi-box:hover {
     transform: translateY(-3px);
-    box-shadow: 0 8px 22px rgba(0,0,0,0.10);
+    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.10);
 }
 
 .kpi-icon {
-    font-size: 28px;
+    font-size: 27px;
     margin-bottom: 8px;
 }
 
 .kpi-label {
-    color: #6B7280;
-    font-size: 13px;
-    font-weight: 500;
-    margin-bottom: 5px;
+    color: #64748B;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 6px;
 }
 
 .kpi-number {
-    color: #111827;
-    font-size: 25px;
-    font-weight: 700;
+    color: #0F172A;
+    font-size: 24px;
+    font-weight: 800;
+}
+
+.kpi-description {
+    color: #94A3B8;
+    font-size: 11px;
+    margin-top: 6px;
+}
+
+/* FILTROS ACTIVOS */
+.filter-status {
+    background: #EFF6FF;
+    border: 1px solid #BFDBFE;
+    color: #1D4ED8;
+    padding: 9px 13px;
+    border-radius: 9px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 16px;
 }
 
 /* TÍTULOS */
-
 .section-title {
-    color: #111827;
-    font-size: 20px;
-    font-weight: 700;
+    color: #0F172A;
+    font-size: 19px;
+    font-weight: 800;
     margin-top: 25px;
     margin-bottom: 10px;
 }
 
-/* SIDEBAR */
-
-.sidebar-title {
-    font-size: 23px;
-    font-weight: 700;
-    color: white !important;
-    margin-bottom: 4px;
-}
-
-.sidebar-text {
-    font-size: 13px;
-    color: #D1D5DB !important;
-    margin-bottom: 18px;
-}
-
 /* BOTÓN DESCARGA */
-
 div[data-testid="stDownloadButton"] button {
     width: 100%;
     min-height: 45px;
     border-radius: 10px;
-    font-weight: 600;
+    font-weight: 700;
 }
 
-/* TABLA */
-
+/* DATAFRAME */
 [data-testid="stDataFrame"] {
     width: 100%;
 }
 
-/* TABLET */
+/* PLOTS */
+.stPlotlyChart {
+    width: 100% !important;
+}
 
+/* MOBILE / TABLET */
 @media (max-width: 992px) {
 
     .block-container {
@@ -149,11 +184,11 @@ div[data-testid="stDownloadButton"] button {
     }
 
     .dashboard-header h1 {
-        font-size: 27px;
+        font-size: 26px;
     }
 
     .kpi-number {
-        font-size: 22px;
+        font-size: 21px;
     }
 
     section[data-testid="stSidebar"] {
@@ -163,68 +198,66 @@ div[data-testid="stDownloadButton"] button {
 }
 
 /* CELULAR */
-
 @media (max-width: 768px) {
 
     .block-container {
-        padding: 0.8rem 0.7rem 1.5rem 0.7rem;
+        padding: 0.7rem 0.6rem 1.5rem 0.6rem;
     }
 
     .dashboard-header {
         padding: 18px 16px;
-        border-radius: 12px;
+        border-radius: 13px;
     }
 
     .dashboard-header h1 {
-        font-size: 21px;
-        line-height: 1.2;
+        font-size: 20px;
+        line-height: 1.25;
     }
 
     .dashboard-header p {
-        font-size: 12px;
-    }
-
-    .kpi-box {
-        padding: 13px;
-        min-height: 115px;
-    }
-
-    .kpi-icon {
-        font-size: 22px;
-    }
-
-    .kpi-label {
         font-size: 11px;
     }
 
+    .kpi-box {
+        padding: 12px;
+        min-height: 112px;
+    }
+
+    .kpi-icon {
+        font-size: 21px;
+    }
+
+    .kpi-label {
+        font-size: 10px;
+    }
+
     .kpi-number {
-        font-size: 18px;
+        font-size: 17px;
+    }
+
+    .kpi-description {
+        font-size: 9px;
     }
 
     .section-title {
-        font-size: 17px;
+        font-size: 16px;
     }
 
     section[data-testid="stSidebar"] {
         min-width: 280px;
         max-width: 88vw;
     }
-
-    .stPlotlyChart {
-        width: 100% !important;
-    }
 }
 
 /* CELULARES PEQUEÑOS */
-
 @media (max-width: 480px) {
 
     .dashboard-header h1 {
-        font-size: 19px;
+        font-size: 18px;
     }
 
     .dashboard-header p {
-        font-size: 11px;
+        font-size: 10px;
     }
 
     .kpi-box {
@@ -233,19 +266,20 @@ div[data-testid="stDownloadButton"] button {
     }
 
     .kpi-icon {
-        font-size: 20px;
+        font-size: 19px;
     }
 
     .kpi-number {
-        font-size: 16px;
+        font-size: 15px;
     }
 }
 
 </style>
 """, unsafe_allow_html=True)
 
+
 # ============================================================
-# CARGAR DATOS
+# CARGA DE DATOS
 # ============================================================
 
 @st.cache_data
@@ -267,6 +301,7 @@ def cargar_datos():
 
 df = cargar_datos()
 
+
 # ============================================================
 # SIDEBAR
 # ============================================================
@@ -279,50 +314,92 @@ with st.sidebar:
     )
 
     st.markdown(
-        '<div class="sidebar-text">Panel ejecutivo de análisis comercial</div>',
+        '<div class="sidebar-subtitle">'
+        'Dashboard Ejecutivo de Ventas'
+        '</div>',
         unsafe_allow_html=True
     )
 
-    st.markdown("### 🔎 FILTROS")
+    st.markdown(
+        '<div class="filter-title">🔎 FILTROS DE ANÁLISIS</div>',
+        unsafe_allow_html=True
+    )
 
     ciudades = st.multiselect(
         "Ciudad",
-        sorted(df["Ciudad"].dropna().unique()),
-        default=sorted(df["Ciudad"].dropna().unique())
+        sorted(
+            df["Ciudad"]
+            .dropna()
+            .unique()
+        ),
+        default=sorted(
+            df["Ciudad"]
+            .dropna()
+            .unique()
+        )
     )
 
     categorias = st.multiselect(
         "Categoría",
-        sorted(df["Categoria"].dropna().unique()),
-        default=sorted(df["Categoria"].dropna().unique())
+        sorted(
+            df["Categoria"]
+            .dropna()
+            .unique()
+        ),
+        default=sorted(
+            df["Categoria"]
+            .dropna()
+            .unique()
+        )
     )
 
     vendedores = st.multiselect(
         "Vendedor",
-        sorted(df["Vendedor"].dropna().unique()),
-        default=sorted(df["Vendedor"].dropna().unique())
+        sorted(
+            df["Vendedor"]
+            .dropna()
+            .unique()
+        ),
+        default=sorted(
+            df["Vendedor"]
+            .dropna()
+            .unique()
+        )
     )
 
     medios = st.multiselect(
         "Medio de pago",
-        sorted(df["Medio_Pago"].dropna().unique()),
-        default=sorted(df["Medio_Pago"].dropna().unique())
+        sorted(
+            df["Medio_Pago"]
+            .dropna()
+            .unique()
+        ),
+        default=sorted(
+            df["Medio_Pago"]
+            .dropna()
+            .unique()
+        )
     )
 
     st.markdown("---")
 
     st.caption("Periodo: Enero - Septiembre 2026")
 
+
 # ============================================================
-# FILTRAR DATOS
+# FILTRADO
 # ============================================================
 
 df_filtrado = df[
     df["Ciudad"].isin(ciudades)
-    & df["Categoria"].isin(categorias)
-    & df["Vendedor"].isin(vendedores)
-    & df["Medio_Pago"].isin(medios)
+    &
+    df["Categoria"].isin(categorias)
+    &
+    df["Vendedor"].isin(vendedores)
+    &
+    df["Medio_Pago"].isin(medios)
 ].copy()
+
 
 # ============================================================
 # HEADER
@@ -330,91 +407,194 @@ df_filtrado = df[
 
 st.markdown("""
 <div class="dashboard-header">
-    <h1>📊 Dashboard Ejecutivo de Ventas</h1>
-    <p>Sales Intelligence · Análisis comercial · Perú · 2026</p>
+
+    <h1>
+        📊 Dashboard Ejecutivo de Ventas
+    </h1>
+
+    <p>
+        Sales Intelligence · Análisis Comercial · Perú · 2026
+    </p>
+
 </div>
 """, unsafe_allow_html=True)
 
+
 # ============================================================
-# CÁLCULO DE KPIs
+# FILTROS ACTIVOS
 # ============================================================
 
-ventas_totales = df_filtrado["Venta_Total_Soles"].sum()
+filtros_activos = (
+    len(ciudades)
+    + len(categorias)
+    + len(vendedores)
+    + len(medios)
+)
 
-transacciones = len(df_filtrado)
+st.markdown(
+    f"""
+    <div class="filter-status">
+        🔎 Filtros activos ·
+        {filtros_activos} selecciones ·
+        {len(df_filtrado):,} registros analizados
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
-unidades = df_filtrado["Cantidad"].sum()
-
-if transacciones > 0:
-    ticket_promedio = ventas_totales / transacciones
-else:
-    ticket_promedio = 0
 
 # ============================================================
 # KPIs
 # ============================================================
 
+ventas_totales = df_filtrado[
+    "Venta_Total_Soles"
+].sum()
+
+transacciones = len(df_filtrado)
+
+unidades = df_filtrado[
+    "Cantidad"
+].sum()
+
+if transacciones > 0:
+
+    ticket_promedio = (
+        ventas_totales /
+        transacciones
+    )
+
+else:
+
+    ticket_promedio = 0
+
+
 kpi1, kpi2, kpi3, kpi4 = st.columns(4)
+
 
 with kpi1:
 
-    st.markdown("""
-    <div class="kpi-box">
-        <div class="kpi-icon">💰</div>
-        <div class="kpi-label">Ventas Totales</div>
-        <div class="kpi-number">
-            S/ {:,.2f}
+    st.markdown(
+        f"""
+        <div class="kpi-box">
+
+            <div class="kpi-icon">
+                💰
+            </div>
+
+            <div class="kpi-label">
+                VENTAS TOTALES
+            </div>
+
+            <div class="kpi-number">
+                S/ {ventas_totales:,.2f}
+            </div>
+
+            <div class="kpi-description">
+                Facturación acumulada
+            </div>
+
         </div>
-    </div>
-    """.format(ventas_totales), unsafe_allow_html=True)
+        """,
+        unsafe_allow_html=True
+    )
 
 
 with kpi2:
 
-    st.markdown("""
-    <div class="kpi-box">
-        <div class="kpi-icon">🧾</div>
-        <div class="kpi-label">Transacciones</div>
-        <div class="kpi-number">
-            {:,}
+    st.markdown(
+        f"""
+        <div class="kpi-box">
+
+            <div class="kpi-icon">
+                🧾
+            </div>
+
+            <div class="kpi-label">
+                TRANSACCIONES
+            </div>
+
+            <div class="kpi-number">
+                {transacciones:,}
+            </div>
+
+            <div class="kpi-description">
+                Operaciones registradas
+            </div>
+
         </div>
-    </div>
-    """.format(transacciones), unsafe_allow_html=True)
+        """,
+        unsafe_allow_html=True
+    )
 
 
 with kpi3:
 
-    st.markdown("""
-    <div class="kpi-box">
-        <div class="kpi-icon">📦</div>
-        <div class="kpi-label">Unidades Vendidas</div>
-        <div class="kpi-number">
-            {:,}
+    st.markdown(
+        f"""
+        <div class="kpi-box">
+
+            <div class="kpi-icon">
+                📦
+            </div>
+
+            <div class="kpi-label">
+                UNIDADES VENDIDAS
+            </div>
+
+            <div class="kpi-number">
+                {unidades:,}
+            </div>
+
+            <div class="kpi-description">
+                Productos vendidos
+            </div>
+
         </div>
-    </div>
-    """.format(unidades), unsafe_allow_html=True)
+        """,
+        unsafe_allow_html=True
+    )
 
 
 with kpi4:
 
-    st.markdown("""
-    <div class="kpi-box">
-        <div class="kpi-icon">🎫</div>
-        <div class="kpi-label">Ticket Promedio</div>
-        <div class="kpi-number">
-            S/ {:,.2f}
+    st.markdown(
+        f"""
+        <div class="kpi-box">
+
+            <div class="kpi-icon">
+                🎫
+            </div>
+
+            <div class="kpi-label">
+                TICKET PROMEDIO
+            </div>
+
+            <div class="kpi-number">
+                S/ {ticket_promedio:,.2f}
+            </div>
+
+            <div class="kpi-description">
+                Venta promedio por operación
+            </div>
+
         </div>
-    </div>
-    """.format(ticket_promedio), unsafe_allow_html=True)
+        """,
+        unsafe_allow_html=True
+    )
+
 
 # ============================================================
 # EVOLUCIÓN MENSUAL
 # ============================================================
 
 st.markdown(
-    '<div class="section-title">📈 Evolución de Ventas Mensuales</div>',
+    '<div class="section-title">'
+    '📈 Evolución de Ventas Mensuales'
+    '</div>',
     unsafe_allow_html=True
 )
+
 
 ventas_mes = (
     df_filtrado
@@ -425,6 +605,7 @@ ventas_mes = (
     .sum()
     .sort_values("Mes_Numero")
 )
+
 
 fig_mes = px.area(
     ventas_mes,
@@ -437,32 +618,46 @@ fig_mes = px.area(
     }
 )
 
+
+fig_mes.update_traces(
+    hovertemplate=
+    "<b>%{x}</b><br>" +
+    "Ventas: S/ %{y:,.2f}<extra></extra>"
+)
+
+
 fig_mes.update_layout(
     template="plotly_white",
     margin=dict(
-        l=20,
-        r=20,
-        t=20,
-        b=20
+        l=15,
+        r=15,
+        t=15,
+        b=15
     ),
-    height=400
+    height=390,
+    hovermode="x unified"
 )
+
 
 st.plotly_chart(
     fig_mes,
     use_container_width=True
 )
 
+
 # ============================================================
-# VENTAS POR CATEGORÍA Y CIUDAD
+# CATEGORÍAS Y CIUDADES
 # ============================================================
 
 col1, col2 = st.columns(2)
 
+
 with col1:
 
     st.markdown(
-        '<div class="section-title">🏷️ Ventas por Categoría</div>',
+        '<div class="section-title">'
+        '🏷️ Ventas por Categoría'
+        '</div>',
         unsafe_allow_html=True
     )
 
@@ -490,13 +685,19 @@ with col1:
         text_auto=".2s"
     )
 
+    fig_categoria.update_traces(
+        hovertemplate=
+        "<b>%{x}</b><br>" +
+        "Ventas: S/ %{y:,.2f}<extra></extra>"
+    )
+
     fig_categoria.update_layout(
         template="plotly_white",
         margin=dict(
-            l=20,
-            r=20,
-            t=20,
-            b=20
+            l=15,
+            r=15,
+            t=15,
+            b=15
         ),
         height=380
     )
@@ -510,7 +711,9 @@ with col1:
 with col2:
 
     st.markdown(
-        '<div class="section-title">🏙️ Ventas por Ciudad</div>',
+        '<div class="section-title">'
+        '🏙️ Ventas por Ciudad'
+        '</div>',
         unsafe_allow_html=True
     )
 
@@ -538,13 +741,19 @@ with col2:
         text_auto=".2s"
     )
 
+    fig_ciudad.update_traces(
+        hovertemplate=
+        "<b>%{x}</b><br>" +
+        "Ventas: S/ %{y:,.2f}<extra></extra>"
+    )
+
     fig_ciudad.update_layout(
         template="plotly_white",
         margin=dict(
-            l=20,
-            r=20,
-            t=20,
-            b=20
+            l=15,
+            r=15,
+            t=15,
+            b=15
         ),
         height=380
     )
@@ -554,16 +763,20 @@ with col2:
         use_container_width=True
     )
 
+
 # ============================================================
-# RANKING Y MEDIOS DE PAGO
+# VENDEDORES Y MEDIOS DE PAGO
 # ============================================================
 
 col3, col4 = st.columns(2)
 
+
 with col3:
 
     st.markdown(
-        '<div class="section-title">🏆 Ranking de Vendedores</div>',
+        '<div class="section-title">'
+        '🏆 Ranking de Vendedores'
+        '</div>',
         unsafe_allow_html=True
     )
 
@@ -592,13 +805,19 @@ with col3:
         text_auto=".2s"
     )
 
+    fig_vendedores.update_traces(
+        hovertemplate=
+        "<b>%{y}</b><br>" +
+        "Ventas: S/ %{x:,.2f}<extra></extra>"
+    )
+
     fig_vendedores.update_layout(
         template="plotly_white",
         margin=dict(
-            l=20,
-            r=20,
-            t=20,
-            b=20
+            l=15,
+            r=15,
+            t=15,
+            b=15
         ),
         height=420,
         yaxis=dict(
@@ -615,7 +834,9 @@ with col3:
 with col4:
 
     st.markdown(
-        '<div class="section-title">💳 Ventas por Medio de Pago</div>',
+        '<div class="section-title">'
+        '💳 Ventas por Medio de Pago'
+        '</div>',
         unsafe_allow_html=True
     )
 
@@ -632,16 +853,25 @@ with col4:
         ventas_pago,
         names="Medio_Pago",
         values="Venta_Total_Soles",
-        hole=0.45
+        hole=0.48
+    )
+
+    fig_pago.update_traces(
+        textposition="inside",
+        textinfo="percent",
+        hovertemplate=
+        "<b>%{label}</b><br>" +
+        "Ventas: S/ %{value:,.2f}<br>" +
+        "%{percent}<extra></extra>"
     )
 
     fig_pago.update_layout(
         template="plotly_white",
         margin=dict(
-            l=20,
-            r=20,
-            t=20,
-            b=20
+            l=15,
+            r=15,
+            t=15,
+            b=15
         ),
         height=420
     )
@@ -651,14 +881,18 @@ with col4:
         use_container_width=True
     )
 
+
 # ============================================================
 # DETALLE DE VENTAS
 # ============================================================
 
 st.markdown(
-    '<div class="section-title">📋 Detalle de Ventas</div>',
+    '<div class="section-title">'
+    '📋 Detalle de Ventas'
+    '</div>',
     unsafe_allow_html=True
 )
+
 
 columnas_detalle = [
     "ID_Venta",
@@ -674,15 +908,18 @@ columnas_detalle = [
     "Venta_Total_Soles"
 ]
 
+
 df_detalle = df_filtrado[
     columnas_detalle
 ].copy()
+
 
 st.dataframe(
     df_detalle,
     use_container_width=True,
     hide_index=True
 )
+
 
 # ============================================================
 # DESCARGA
@@ -692,12 +929,14 @@ csv = df_detalle.to_csv(
     index=False
 ).encode("utf-8")
 
+
 st.download_button(
     label="⬇️ Descargar ventas filtradas",
     data=csv,
     file_name="ventas_filtradas.csv",
     mime="text/csv"
 )
+
 
 # ============================================================
 # FOOTER
@@ -706,11 +945,11 @@ st.download_button(
 st.markdown("""
 <div style="
     text-align:center;
-    color:#6B7280;
-    font-size:12px;
-    margin-top:30px;
-    padding-bottom:10px;
+    color:#64748B;
+    font-size:11px;
+    margin-top:32px;
+    padding:15px 0 8px 0;
 ">
-    Dashboard Ejecutivo de Ventas · Sales Intelligence · Perú 2026
+    Sales Intelligence · Dashboard Ejecutivo de Ventas · Perú 2026
 </div>
 """, unsafe_allow_html=True)
