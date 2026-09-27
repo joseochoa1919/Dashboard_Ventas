@@ -14,7 +14,7 @@ st.set_page_config(
 )
 
 # ============================================================
-# DISEÑO CSS
+# CSS
 # ============================================================
 
 st.markdown("""
@@ -63,43 +63,36 @@ section[data-testid="stSidebar"] * {
 
 /* KPI */
 
-.kpi-card {
+.kpi-box {
     background: white;
     border-radius: 16px;
-    padding: 20px;
-    min-height: 145px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    padding: 18px 20px;
+    min-height: 135px;
     border: 1px solid #E5E7EB;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    transition: all 0.2s ease;
 }
 
-.kpi-card:hover {
+.kpi-box:hover {
     transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.10);
+    box-shadow: 0 8px 22px rgba(0,0,0,0.10);
 }
 
 .kpi-icon {
-    width: 45px;
-    height: 45px;
-    border-radius: 12px;
-    background: #EFF6FF;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 23px;
-    margin-bottom: 10px;
+    font-size: 28px;
+    margin-bottom: 8px;
 }
 
-.kpi-title {
+.kpi-label {
     color: #6B7280;
-    font-size: 14px;
-    margin-bottom: 6px;
+    font-size: 13px;
     font-weight: 500;
+    margin-bottom: 5px;
 }
 
-.kpi-value {
+.kpi-number {
     color: #111827;
-    font-size: 26px;
+    font-size: 25px;
     font-weight: 700;
 }
 
@@ -143,7 +136,7 @@ div[data-testid="stDownloadButton"] button {
     width: 100%;
 }
 
-/* RESPONSIVE TABLET */
+/* TABLET */
 
 @media (max-width: 992px) {
 
@@ -159,8 +152,8 @@ div[data-testid="stDownloadButton"] button {
         font-size: 27px;
     }
 
-    .kpi-value {
-        font-size: 24px;
+    .kpi-number {
+        font-size: 22px;
     }
 
     section[data-testid="stSidebar"] {
@@ -169,7 +162,7 @@ div[data-testid="stDownloadButton"] button {
     }
 }
 
-/* RESPONSIVE CELULAR */
+/* CELULAR */
 
 @media (max-width: 768px) {
 
@@ -183,7 +176,7 @@ div[data-testid="stDownloadButton"] button {
     }
 
     .dashboard-header h1 {
-        font-size: 22px;
+        font-size: 21px;
         line-height: 1.2;
     }
 
@@ -191,24 +184,21 @@ div[data-testid="stDownloadButton"] button {
         font-size: 12px;
     }
 
-    .kpi-card {
-        padding: 15px;
-        min-height: 125px;
+    .kpi-box {
+        padding: 13px;
+        min-height: 115px;
     }
 
     .kpi-icon {
-        width: 38px;
-        height: 38px;
-        font-size: 19px;
-        border-radius: 10px;
+        font-size: 22px;
     }
 
-    .kpi-title {
-        font-size: 12px;
+    .kpi-label {
+        font-size: 11px;
     }
 
-    .kpi-value {
-        font-size: 19px;
+    .kpi-number {
+        font-size: 18px;
     }
 
     .section-title {
@@ -230,26 +220,24 @@ div[data-testid="stDownloadButton"] button {
 @media (max-width: 480px) {
 
     .dashboard-header h1 {
-        font-size: 20px;
+        font-size: 19px;
     }
 
     .dashboard-header p {
         font-size: 11px;
     }
 
-    .kpi-card {
-        padding: 12px;
-        min-height: 115px;
+    .kpi-box {
+        padding: 10px;
+        min-height: 105px;
     }
 
     .kpi-icon {
-        width: 34px;
-        height: 34px;
-        font-size: 17px;
+        font-size: 20px;
     }
 
-    .kpi-value {
-        font-size: 17px;
+    .kpi-number {
+        font-size: 16px;
     }
 }
 
@@ -271,6 +259,7 @@ def cargar_datos():
     )
 
     df["Mes"] = df["Fecha"].dt.strftime("%B")
+
     df["Mes_Numero"] = df["Fecha"].dt.month
 
     return df
@@ -279,7 +268,7 @@ def cargar_datos():
 df = cargar_datos()
 
 # ============================================================
-# SIDEBAR - FILTROS
+# SIDEBAR
 # ============================================================
 
 with st.sidebar:
@@ -341,18 +330,13 @@ df_filtrado = df[
 
 st.markdown("""
 <div class="dashboard-header">
-
     <h1>📊 Dashboard Ejecutivo de Ventas</h1>
-
-    <p>
-        Sales Intelligence · Análisis comercial · Perú · 2026
-    </p>
-
+    <p>Sales Intelligence · Análisis comercial · Perú · 2026</p>
 </div>
 """, unsafe_allow_html=True)
 
 # ============================================================
-# KPIs
+# CÁLCULO DE KPIs
 # ============================================================
 
 ventas_totales = df_filtrado["Venta_Total_Soles"].sum()
@@ -361,105 +345,67 @@ transacciones = len(df_filtrado)
 
 unidades = df_filtrado["Cantidad"].sum()
 
-ticket_promedio = (
-    ventas_totales / transacciones
-    if transacciones > 0
-    else 0
-)
+if transacciones > 0:
+    ticket_promedio = ventas_totales / transacciones
+else:
+    ticket_promedio = 0
+
+# ============================================================
+# KPIs
+# ============================================================
 
 kpi1, kpi2, kpi3, kpi4 = st.columns(4)
 
 with kpi1:
 
-    st.markdown(
-        f"""
-        <div class="kpi-card">
-
-            <div class="kpi-icon">
-                💰
-            </div>
-
-            <div class="kpi-title">
-                Ventas Totales
-            </div>
-
-            <div class="kpi-value">
-                S/ {ventas_totales:,.2f}
-            </div>
-
+    st.markdown("""
+    <div class="kpi-box">
+        <div class="kpi-icon">💰</div>
+        <div class="kpi-label">Ventas Totales</div>
+        <div class="kpi-number">
+            S/ {:,.2f}
         </div>
-        """,
-        unsafe_allow_html=True
-    )
+    </div>
+    """.format(ventas_totales), unsafe_allow_html=True)
+
 
 with kpi2:
 
-    st.markdown(
-        f"""
-        <div class="kpi-card">
-
-            <div class="kpi-icon">
-                🧾
-            </div>
-
-            <div class="kpi-title">
-                Transacciones
-            </div>
-
-            <div class="kpi-value">
-                {transacciones:,}
-            </div>
-
+    st.markdown("""
+    <div class="kpi-box">
+        <div class="kpi-icon">🧾</div>
+        <div class="kpi-label">Transacciones</div>
+        <div class="kpi-number">
+            {:,}
         </div>
-        """,
-        unsafe_allow_html=True
-    )
+    </div>
+    """.format(transacciones), unsafe_allow_html=True)
+
 
 with kpi3:
 
-    st.markdown(
-        f"""
-        <div class="kpi-card">
-
-            <div class="kpi-icon">
-                📦
-            </div>
-
-            <div class="kpi-title">
-                Unidades Vendidas
-            </div>
-
-            <div class="kpi-value">
-                {unidades:,}
-            </div>
-
+    st.markdown("""
+    <div class="kpi-box">
+        <div class="kpi-icon">📦</div>
+        <div class="kpi-label">Unidades Vendidas</div>
+        <div class="kpi-number">
+            {:,}
         </div>
-        """,
-        unsafe_allow_html=True
-    )
+    </div>
+    """.format(unidades), unsafe_allow_html=True)
+
 
 with kpi4:
 
-    st.markdown(
-        f"""
-        <div class="kpi-card">
-
-            <div class="kpi-icon">
-                🎫
-            </div>
-
-            <div class="kpi-title">
-                Ticket Promedio
-            </div>
-
-            <div class="kpi-value">
-                S/ {ticket_promedio:,.2f}
-            </div>
-
+    st.markdown("""
+    <div class="kpi-box">
+        <div class="kpi-icon">🎫</div>
+        <div class="kpi-label">Ticket Promedio</div>
+        <div class="kpi-number">
+            S/ {:,.2f}
         </div>
-        """,
-        unsafe_allow_html=True
-    )
+    </div>
+    """.format(ticket_promedio), unsafe_allow_html=True)
 
 # ============================================================
 # EVOLUCIÓN MENSUAL
@@ -508,7 +454,7 @@ st.plotly_chart(
 )
 
 # ============================================================
-# CATEGORÍA Y CIUDAD
+# VENTAS POR CATEGORÍA Y CIUDAD
 # ============================================================
 
 col1, col2 = st.columns(2)
@@ -560,6 +506,7 @@ with col1:
         use_container_width=True
     )
 
+
 with col2:
 
     st.markdown(
@@ -608,7 +555,7 @@ with col2:
     )
 
 # ============================================================
-# VENDEDORES Y MEDIOS DE PAGO
+# RANKING Y MEDIOS DE PAGO
 # ============================================================
 
 col3, col4 = st.columns(2)
@@ -663,6 +610,7 @@ with col3:
         fig_vendedores,
         use_container_width=True
     )
+
 
 with col4:
 
