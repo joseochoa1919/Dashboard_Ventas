@@ -193,7 +193,6 @@ with st.sidebar:
     )
 
     st.markdown("---")
-    st.caption("Datos ficticios generados con IA/Python")
     st.caption("Periodo: Enero - Septiembre 2026")
 
 # ============================================================
